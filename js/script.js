@@ -1,3 +1,5 @@
+const { defineComponent, createApp, reactive } = Vue;
+
 // Sample data
 const server_data = {
     collection: {
@@ -40,29 +42,60 @@ const server_data = {
 // Componente edit-form
 const EditForm = defineComponent({
     template: `
-        <div>
-            <h2>Edit Form</h2>
-            <!-- Aquí iría el formulario de edición -->
-        </div>
+        <div class="card m-2 col-4" style="width: 18rem;">
+                <div class="card-body">
+                    <h5><strong>Name:</strong></h5>
+                    <input class="card-title">{{ item.data.find(d => d.name === 'name').value }}</input>
+                    <h6><strong>Description</strong></h6>
+                    <input class="card-subtitle mb-2 text-muted">{{ item.data.find(d => d.name === 'description').value }}</input>
+                    <h6 class="card-text"><strong>Director</strong></h6>
+                    <input class="card-subtitle text-muted">{{ item.data.find(d => d.name === 'director').value }}</input>
+                    <h6 class="card-text"><strong>Realease Date</strong></h6>
+                    <input class="card-subtitle text-muted mb-2">{{ item.data.find(d => d.name === 'datePublished').value }}</input>
+                    <div class="d-flex gap-2">
+                        <a v-bind:href="item.href" class="btn btn-primary">Ver</a>
+                        <a href="#" class="btn btn-secondary">Cerrar</a>
+                    </div>
+                </div>
+            </div>
     `
 });
 
 // Componente item-data
 const ItemData = defineComponent({
     props: {
-        item: {
-            type: Object,
-            required: true
+        item: Object  // Recibe los datos de la película
+    },
+    data() {
+        return {
+            isEditing: false 
+        };
+    },
+    methods: {
+        toggleEdit() {
+            this.isEditing = !this.isEditing;
         }
     },
     template: `
-        <div>
-            <h3>{{ item.data.find(d => d.name === 'name').value }}</h3>
-            <p>{{ item.data.find(d => d.name === 'description').value }}</p>
-            <p><strong>Director:</strong> {{ item.data.find(d => d.name === 'director').value }}</p>
-            <p><strong>Release Date:</strong> {{ item.data.find(d => d.name === 'datePublished').value }}</p>
-            <a :href="item.href" target="_blank">More Info</a>
-        </div>
+            <div class="card m-2 col-4" style="width: 18rem;">
+                <div class="card-body">
+                    <h5><strong>Name:</strong></h5>
+                    <h5 class="card-title">{{ item.data.find(d => d.name === 'name').value }}</h5>
+                    <h6><strong>Description</strong></h6>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ item.data.find(d => d.name === 'description').value }}</h6>
+                    <h6 class="card-text"><strong>Director</strong></h6>
+                    <h6 class="card-subtitle text-muted">{{ item.data.find(d => d.name === 'director').value }}</h6>
+                    <h6 class="card-text"><strong>Realease Date</strong></h6>
+                    <h6 class="card-subtitle text-muted mb-2">{{ item.data.find(d => d.name === 'datePublished').value }}</h6>
+                    <div class="d-flex gap-2">
+                        <a v-bind:href="item.href" class="btn btn-primary">Ver</a>
+                         <button @click="toggleEdit" class="btn btn-secondary">Editar</button>
+                    </div>
+                </div>
+            </div>
+
+            <EditForm v-if="isEditing" :item="item" @close="toggleEdit" />
+
     `
 });
 
