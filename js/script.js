@@ -41,61 +41,75 @@ const server_data = {
 
 // Componente edit-form
 const EditForm = defineComponent({
+    props: {
+        item: {
+            type: Object,
+            required: true
+        }
+    },
+    methods: {
+        closeEdit() {
+            this.$emit('close'); 
+        }
+    },
+    
     template: `
         <div class="card m-2 col-4" style="width: 18rem;">
-                <div class="card-body">
-                    <h5><strong>Name:</strong></h5>
-                    <input class="card-title">{{ item.data.find(d => d.name === 'name').value }}</input>
-                    <h6><strong>Description</strong></h6>
-                    <input class="card-subtitle mb-2 text-muted">{{ item.data.find(d => d.name === 'description').value }}</input>
-                    <h6 class="card-text"><strong>Director</strong></h6>
-                    <input class="card-subtitle text-muted">{{ item.data.find(d => d.name === 'director').value }}</input>
-                    <h6 class="card-text"><strong>Realease Date</strong></h6>
-                    <input class="card-subtitle text-muted mb-2">{{ item.data.find(d => d.name === 'datePublished').value }}</input>
-                    <div class="d-flex gap-2">
-                        <a v-bind:href="item.href" class="btn btn-primary">Ver</a>
-                        <a href="#" class="btn btn-secondary">Cerrar</a>
-                    </div>
+            <div class="card-body">
+                <h5><strong>Name:</strong></h5>
+                <input class="form-control" v-model="item.data.find(d => d.name === 'name').value" />
+                <h6><strong>Description</strong></h6>
+                <textarea class="form-control" v-model="item.data.find(d => d.name === 'description').value"></textarea>
+                <h6 class="card-text"><strong>Director</strong></h6>
+                <input class="form-control" v-model="item.data.find(d => d.name === 'director').value" />
+                <h6 class="card-text"><strong>Release Date</strong></h6>
+                <input class="form-control" v-model="item.data.find(d => d.name === 'datePublished').value" />
+                <div class="d-flex gap-2 mt-2">
+                    <button @click="closeEdit" class="btn btn-secondary">Cerrar</button>
                 </div>
             </div>
+        </div>
     `
 });
+
 
 // Componente item-data
 const ItemData = defineComponent({
     props: {
-        item: Object  // Recibe los datos de la película
+        item: {
+            type: Object,
+            required: true
+        }
     },
     data() {
         return {
-            isEditing: false 
+            isEditing: false  
         };
     },
     methods: {
         toggleEdit() {
-            this.isEditing = !this.isEditing;
+            this.isEditing = !this.isEditing; 
         }
     },
     template: `
-            <div class="card m-2 col-4" style="width: 18rem;">
-                <div class="card-body">
-                    <h5><strong>Name:</strong></h5>
-                    <h5 class="card-title">{{ item.data.find(d => d.name === 'name').value }}</h5>
-                    <h6><strong>Description</strong></h6>
-                    <h6 class="card-subtitle mb-2 text-muted">{{ item.data.find(d => d.name === 'description').value }}</h6>
-                    <h6 class="card-text"><strong>Director</strong></h6>
-                    <h6 class="card-subtitle text-muted">{{ item.data.find(d => d.name === 'director').value }}</h6>
-                    <h6 class="card-text"><strong>Realease Date</strong></h6>
-                    <h6 class="card-subtitle text-muted mb-2">{{ item.data.find(d => d.name === 'datePublished').value }}</h6>
-                    <div class="d-flex gap-2">
-                        <a v-bind:href="item.href" class="btn btn-primary">Ver</a>
-                         <button @click="toggleEdit" class="btn btn-secondary">Editar</button>
-                    </div>
+        <div v-if="!isEditing" class="card m-2 col-4" style="width: 18rem;">
+            <div class="card-body">
+                <h5><strong>Name:</strong></h5>
+                <h5 class="card-title">{{ item.data.find(d => d.name === 'name').value }}</h5>
+                <h6><strong>Description</strong></h6>
+                <h6 class="card-subtitle mb-2 text-muted">{{ item.data.find(d => d.name === 'description').value }}</h6>
+                <h6 class="card-text"><strong>Director</strong></h6>
+                <h6 class="card-subtitle text-muted">{{ item.data.find(d => d.name === 'director').value }}</h6>
+                <h6 class="card-text"><strong>Release Date</strong></h6>
+                <h6 class="card-subtitle text-muted mb-2">{{ item.data.find(d => d.name === 'datePublished').value }}</h6>
+                <div class="d-flex gap-2">
+                    <a v-bind:href="item.href" class="btn btn-primary">Ver</a>
+                    <button @click="toggleEdit" class="btn btn-secondary">Editar</button>
                 </div>
             </div>
+        </div>
 
-            <EditForm v-if="isEditing" :item="item" @close="toggleEdit" />
-
+        <edit-form v-else :item="item" @close="toggleEdit" />
     `
 });
 
